@@ -144,7 +144,7 @@ A working front end built as a portfolio piece. Payment and the seat hold are si
 
 ## Author
 
-Built by [Rendi](https://github.com/yosrend), UI/UX and product designer at Morae Studio.
+Built by [Yosep Rendi](https://github.com/yosrend), UI/UX and product designer at Morae Studio.
 
 ## License
 
