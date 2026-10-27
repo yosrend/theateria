@@ -12,6 +12,14 @@ Open http://localhost:8080. If the port is busy, use another one such as 8090.
 
 GSAP, ScrollTrigger, three.js and the fonts load from public CDNs, so the browser needs an internet connection.
 
+## Check before pushing
+
+```bash
+node scripts/check.mjs
+```
+
+The script checks the syntax of every script and confirms that each local file used by `index.html` exists. It runs on every push through GitHub Actions.
+
 ## Deploy to Vercel
 
 1. Push the repo to GitHub

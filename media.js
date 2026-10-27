@@ -46,6 +46,6 @@
   }
   var E=[['/img/ev1.jpg','The grand auditorium with gold balconies and a painted ceiling, seen from the stalls'],['/img/ev2.jpg','Audience seated on the curved red balconies of a historic theatre'],['/img/ev3.jpg','Performers on stage raising their hands together while the crowd films and applauds'],['/img/ev4.jpg','Two people leaning together in red theatre seats']];
   [].slice.call(document.querySelectorAll('.ev__bg')).forEach(function(im,i){ if(E[i]){ var t=new Image(); t.onload=function(){ im.src=E[i][0]; im.alt=E[i][1]; }; t.src=E[i][0]; } });
-  var a=document.createElement('script'); a.src='/anim30.js'; document.body.appendChild(a);
+  var a=document.createElement('script'); a.src='/animation.js'; document.body.appendChild(a);
   setTimeout(function(){ if(window.ScrollTrigger) ScrollTrigger.refresh(); },400);
 })();
