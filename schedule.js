@@ -54,4 +54,4 @@
   if(!RM){ gsap.set(rows,{autoAlpha:0,y:40}); ScrollTrigger.batch(rows,{start:'top 92%',once:true,onEnter:function(b){ gsap.to(b,{autoAlpha:1,y:0,duration:.8,ease:'power3.out',stagger:.1,overwrite:true,clearProps:'transform,opacity,visibility'}); }}); }
   setTimeout(function(){ ScrollTrigger.refresh(); },300);
 })();
-;(function(){var s=document.createElement('script');s.src='/media28.js';document.body.appendChild(s)})();
+;(function(){var s=document.createElement('script');s.src='/media.js';document.body.appendChild(s)})();

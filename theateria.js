@@ -13,7 +13,7 @@ const SHOWS = [
   {id:'drm', img:'/img/about.jpg', pos:'50% 40%', kind:'Drama', title:'Monologues of a Rainy City', date:'Sat 21 Nov', time:'19:30', hall:'Studio Stage', icon:'<path d="M5 8h14v10Q12 26 5 18ZM17 16h14v10Q24 34 17 26Z"/>'},
   {id:'jzz', img:'/img/hero-m-k4.jpg', pos:'50% 40%', kind:'Jazz', title:'Midnight Session', date:'Fri 27 Nov', time:'21:00', hall:'Rooftop Terrace', icon:'<path d="M3 18Q9 6 14 18T25 18T33 18"/>'}
 ];
-const ROOMS = [
+window.__SHOWS=SHOWS;const ROOMS = [
   {name:'Main Hall', img:'/img/hero-k4.jpg', alt:'The Main Hall from the balcony, full of people before the show', pos:'50% 50%', seats:'100 seats', best:'Symphony, opera, ballet', from:'£40', art:'<rect x="70" y="8" width="60" height="14" rx="2"/><path d="M40 40Q100 100 160 40M30 56Q100 118 170 56M20 72Q100 136 180 72"/>'},
   {name:'Chamber Room', img:'/img/gal-3.jpg', alt:'Musicians and the conductor in the pit under the gold balconies', pos:'50% 45%', seats:'48 seats', best:'Quartets, recitals', from:'£30', art:'<rect x="60" y="10" width="80" height="34" rx="3"/><ellipse cx="100" cy="27" rx="16" ry="9"/><g class="d"><circle cx="60" cy="64" r="4"/><circle cx="80" cy="64" r="4"/><circle cx="100" cy="64" r="4"/><circle cx="120" cy="64" r="4"/><circle cx="140" cy="64" r="4"/><circle cx="70" cy="84" r="4"/><circle cx="90" cy="84" r="4"/><circle cx="110" cy="84" r="4"/><circle cx="130" cy="84" r="4"/></g>'},
   {name:'Studio Stage', img:'/img/hero-k1.jpg', alt:'The conductor in front of the closed red velvet curtain', pos:'50% 50%', seats:'60 seats', best:'Drama, new work', from:'£25', art:'<rect x="30" y="10" width="140" height="100" rx="2"/><rect x="60" y="22" width="80" height="40" rx="2"/><g class="d"><circle cx="50" cy="86" r="4"/><circle cx="75" cy="86" r="4"/><circle cx="100" cy="86" r="4"/><circle cx="125" cy="86" r="4"/><circle cx="150" cy="86" r="4"/></g>'},
@@ -390,6 +390,7 @@ if(!RM) $$('[data-reveal]').forEach(el=>gsap.from(el,{autoAlpha:0,y:24,duration:
   const guestOf=s=>(guests[s.id]||'').trim()||buyer.name;
   const needsTxt=()=>[needs.step?'Step-free access':'',needs.loop?'Hearing loop seat':''].filter(Boolean).join(', ');
   const neighbours=()=>{ const out=[]; if(order.length>=8) return out; order.forEach(s=>{ const r=s.row, i=r.seats.indexOf(s); [i===5?null:r.seats[i-1], i===4?null:r.seats[i+1]].forEach(n=>{ if(n&&n.state==='free'&&!sel.has(n.id)&&!out.includes(n)&&!findOrphan(new Set([...sel,n.id]))) out.push(n); }); }); return out.slice(0,6); };
+  function toast(t){ const d=document.createElement('div'); d.className='toast'; d.setAttribute('role','status'); d.textContent=t; document.body.appendChild(d); setTimeout(()=>d.classList.add('is-in'),20); setTimeout(()=>{d.classList.remove('is-in'); setTimeout(()=>d.remove(),500);},4600); }
   function renderCo(focus){
     const sh=showNow(), t=totals(), idx={review:0,details:1,pay:2,taken:2,expired:2,sending:3,done:3}[stage];
     coSteps.innerHTML=['Review','Your details','Payment','Confirmation'].map((n,i)=>`<li class="${i===idx?'on':(i<idx?'ok':'')}"${i===idx?' aria-current="step"':''}>${i+1}. ${n}</li>`).join('');
@@ -426,10 +427,12 @@ if(!RM) $$('[data-reveal]').forEach(el=>gsap.from(el,{autoAlpha:0,y:24,duration:
         <div class="field"><label for="cName">Full name</label><input id="cName" autocomplete="name" value="${esc(buyer.name)}" ${coErr.name?'aria-invalid="true" aria-describedby="eName"':''}>${coErr.name?`<span class="err" id="eName">${coErr.name}</span>`:''}</div>
         <div class="field"><label for="cMail">Email</label><input id="cMail" type="email" autocomplete="email" value="${esc(buyer.email)}" ${coErr.email?'aria-invalid="true" aria-describedby="eMail"':''}>${coErr.email?`<span class="err" id="eMail">${coErr.email}</span>`:''}</div>
         <div class="field"><label for="cPhone">Phone <span style="color:var(--dim)">(optional, only for changes on the night)</span></label><input id="cPhone" type="tel" autocomplete="tel" value="${esc(buyer.phone)}"></div>
+        <div class="field"><label for="cPhone">Phone <span style="color:var(--dim)">(optional, only for changes on the night)</span></label><input id="cPhone" type="tel" autocomplete="tel" value="${esc(buyer.phone)}"></div>
         <div class="co__actions"><button class="btn" type="submit">Continue to payment</button><button class="btn btn--ghost" type="button" data-act="review">Back to review</button></div>
       </form>`;
     } else if(stage==='pay'){
       const o=(v,b,d)=>`<label class="opt"><input type="radio" name="demo" value="${v}" ${payPick===v?'checked':''}><div><b>${b}</b><span>${d}</span></div></label>`;
+      const names={card:'card',apple:'Apple Pay or Google Pay',paypal:'PayPal',bank:'bank transfer'};
       h=`<h2 id="coTitle" tabindex="-1">How would you like to pay?</h2><p class="lede">Booking for ${esc(buyer.name)}. Choose a payment method. This is a concept build, so no real payment is taken and no card details are asked for.</p>
       ${coMsg?`<div class="banner" role="alert">${coMsg}</div>`:''}
       <fieldset style="border:0;padding:0;margin:0"><legend class="sr">Payment method</legend>
@@ -438,8 +441,7 @@ if(!RM) $$('[data-reveal]').forEach(el=>gsap.from(el,{autoAlpha:0,y:24,duration:
       ${o('paypal','PayPal','Pay with your PayPal balance or linked bank.')}
       ${o('bank','Bank transfer','Faster Payments. Your seats stay held while the transfer arrives.')}
       </fieldset>
-      <p class="rv__terms">Free cancellation up to 48 hours before the show. After that, tickets can be moved to another date but not refunded.</p>
-      <div class="co__actions"><button class="btn" id="coPay" type="button" data-act="pay" ${busy?'disabled':''}>${busy?'Processing payment':'Pay '+money(t.total)+' by '+PAYN[payPick]}</button><button class="btn btn--ghost" type="button" data-act="edit" ${busy?'disabled':''}>Edit details</button></div>`;
+      <div class="co__actions"><button class="btn" id="coPay" type="button" data-act="pay" ${busy?'disabled':''}>${busy?'Processing payment':'Pay '+gbp(t.total)+' by '+names[payPick]}</button><button class="btn btn--ghost" type="button" data-act="edit" ${busy?'disabled':''}>Edit details</button></div>`;
     } else if(stage==='sending'){
       h=`<h2 id="coTitle" tabindex="-1">Payment received</h2><p class="lede">Thank you, ${esc(buyer.name)}. We are sending your invitation to ${esc(buyer.email)}.</p><div class="sending" role="status"><i></i><span>Sending email</span></div>`;
     } else if(stage==='expired'){
@@ -466,7 +468,7 @@ if(!RM) $$('[data-reveal]').forEach(el=>gsap.from(el,{autoAlpha:0,y:24,duration:
   }
   coMain.addEventListener('submit',e=>{
     e.preventDefault(); if(stage!=='details') return;
-    buyer.name=$('#cName').value.trim(); buyer.email=$('#cMail').value.trim(); buyer.phone=($('#cPhone')||{value:''}).value.trim(); coErr={};
+    buyer.name=$('#cName').value.trim(); buyer.email=$('#cMail').value.trim(); buyer.phone=($('#cPhone')||{value:''}).value.trim(); buyer.phone=($('#cPhone')||{value:''}).value.trim(); coErr={};
     if(buyer.name.length<2) coErr.name='Enter the name for the booking.';
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(buyer.email)) coErr.email='Enter an email like name@example.com.';
     if(coErr.name||coErr.email){ renderCo(); const b=$(coErr.name?'#cName':'#cMail'); if(b) b.focus(); return; }
@@ -805,3 +807,5 @@ if(!RM) $$('[data-reveal]').forEach(el=>gsap.from(el,{autoAlpha:0,y:24,duration:
   m.add('(max-width: 820px)',()=>{ $$('.stat').forEach((s,i)=>ScrollTrigger.create({trigger:s,start:'top 85%',once:true,onEnter:()=>count(i)})); });
 })();
 })();
+
+;setTimeout(function(){var s=document.createElement('script');s.src='/schedule.js';document.body.appendChild(s)},0);

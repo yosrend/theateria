@@ -90,7 +90,7 @@ stateDiagram-v2
 | Layer | Choice |
 |---|---|
 | Markup and styles | Plain HTML and CSS |
-| Scripts | Vanilla JavaScript, loaded at runtime by `index.html` |
+| Scripts | Vanilla JavaScript, loaded with plain script tags |
 | Animation | GSAP 3.12 with ScrollTrigger |
 | 360 view | three.js r128 |
 | Type | Faculty Glyphic for headings, system sans (SF Pro, Inter) for body |
@@ -105,15 +105,14 @@ theateria/
 ├── img/               photos, gallery tiles and event images
 ├── frames/            96 intro frames
 ├── views/             360 view images
-├── index.html         page markup and runtime loader
-├── theateria.js       page script
-├── theateria25.js     runtime patches applied on load
-├── checkout26.js      booking summary and checkout
-├── schedule27.js      program list with cursor preview
-├── media28.js         gallery, photo viewer and event images
-├── anim30.js          section load animations
-├── theateria.css
-├── theateria25.css
+├── scripts/
+│   └── check.mjs      script syntax and local file check, run by CI
+├── index.html         page markup and meta tags
+├── theateria.js       page script: seat map, hold timer, 360 view, checkout
+├── schedule.js        program list with cursor preview
+├── media.js           gallery, photo viewer and event images
+├── animation.js       section load animations
+├── theateria.css      all styles
 ├── LICENSE            MIT
 └── README.md
 ```
@@ -134,7 +133,7 @@ Open http://localhost:8080. GSAP and fonts load from public CDNs, so the browser
 |---|---|
 | [docs/product.md](docs/product.md) | Audience, scope and what the site does not do |
 | [docs/booking-rules.md](docs/booking-rules.md) | Tiers, fees, limits, hold timer, orphan seat rule, promo |
-| [docs/architecture.md](docs/architecture.md) | How the page loads and how each script patches it |
+| [docs/architecture.md](docs/architecture.md) | How the page loads and what each script does |
 | [docs/design-system.md](docs/design-system.md) | Type, color, motion and component notes |
 | [docs/setup.md](docs/setup.md) | Run locally and deploy to Vercel |
 
